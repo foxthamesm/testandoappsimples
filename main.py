@@ -17,7 +17,9 @@ def main(page: ft.Page):
             # Salva o arquivo em disco
             file_path = os.path.join(UPLOAD_DIR, file.name)
             with open(file_path, "wb") as f:
-                f.write(file.bytes)
+                print(file.name)
+                print(type(file))
+                f.write(file)
 
             info_text.value = f"Upload concluído: {file.name}"
             page.update()
