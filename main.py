@@ -16,13 +16,9 @@ def main(page: ft.Page):
 
             # Salva o arquivo em disco
             file_path = os.path.join(UPLOAD_DIR, file.name)
-            try:
-                obje = file.content
-            except Exception as e:
-                print('o file.content não é valido', e)
-                
+            
             with open(file_path, "wb") as f:
-                f.write(obje)
+                f.write(file.content)
 
             info_text.value = f"Upload concluído: {file.name}"
             page.update()
