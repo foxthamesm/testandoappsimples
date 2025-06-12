@@ -16,10 +16,14 @@ def main(page: ft.Page):
 
             # Salva o arquivo em disco
             file_path = os.path.join(UPLOAD_DIR, file.name)
+            obje = ''
+            with open(file_path, "rb") as f:
+                bytes_obj = file_path.read()
+                print(bytes_obj)
+                print(type(bytes_obj))
+
             with open(file_path, "wb") as f:
-                print(file.name)
-                print(type(file))
-                f.write(file)
+                f.write(bytes_obj)
 
             info_text.value = f"Upload concluído: {file.name}"
             page.update()
