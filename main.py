@@ -16,14 +16,13 @@ def main(page: ft.Page):
 
             # Salva o arquivo em disco
             file_path = os.path.join(UPLOAD_DIR, file.name)
-            obje = ''
-            with open(file, "rb") as f:
-                bytes_obj = file_path.read()
-                print(bytes_obj)
-                print(type(bytes_obj))
-
+            try:
+                obje = file.content
+            except Exception as e:
+                print('o file.content não é valido', e)
+                
             with open(file_path, "wb") as f:
-                f.write(bytes_obj)
+                f.write(obje)
 
             info_text.value = f"Upload concluído: {file.name}"
             page.update()
