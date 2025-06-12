@@ -17,7 +17,7 @@ def main(page: ft.Page):
             # Salva o arquivo em disco
             file_path = os.path.join(UPLOAD_DIR, file.name)
             obje = ''
-            with open(file_path, "rb") as f:
+            with open(file, "rb") as f:
                 bytes_obj = file_path.read()
                 print(bytes_obj)
                 print(type(bytes_obj))
