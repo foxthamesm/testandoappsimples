@@ -15,6 +15,8 @@ def main(page: ft.Page):
         if e.files:
             file = e.files[0]
             file_name_text.value = f"Arquivo selecionado: {file.name}"
+
+            a = page.get_upload_url(file)
             page.update()
 
             # Gera URL de upload no FastAPI
@@ -22,7 +24,7 @@ def main(page: ft.Page):
 
             # Faz upload do arquivo usando o próprio Flet
             file_picker.upload(
-                [ft.FilePickerUploadFile(file.name, upload_url, method="POST")]
+                [ft.FilePickerUploadFile(a, upload_url, method="POST")]
             )
 
             
