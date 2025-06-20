@@ -1,7 +1,6 @@
 import flet as ft
 import requests
 
-
 def main(page: ft.Page):
     page.title = "Upload de Arquivo"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
@@ -70,6 +69,12 @@ def main(page: ft.Page):
         on_click=on_upload_clicked
     )
 
-    page.add()
+    page.add(
+        pick_file_button,
+        file_name_text,
+        upload_button,
+        upload_status_text,
+        uploaded_image
+    )
 
 ft.app(target=main, view=ft.WEB_BROWSER)
