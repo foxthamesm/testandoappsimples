@@ -16,7 +16,7 @@ def main(page: ft.Page):
             file = e.files[0]
             file_name_text.value = f"Arquivo selecionado: {file.name}"
 
-            a = page.get_upload_url(file)
+            a = page.get_upload_url(file, expires=600)
             page.update()
 
             # Gera URL de upload no FastAPI
