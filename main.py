@@ -1,4 +1,6 @@
 import flet as ft
+import requests
+
 
 def main(page: ft.Page):
     page.title = "Upload de Arquivo"
@@ -19,27 +21,25 @@ def main(page: ft.Page):
         if e.files:
             file = e.files[0]
             file_name_text.value = f"Arquivo selecionado: {file.name}"
+            path = file.path
+            #@app.post("/cadastrar_produto/")
+            url = "https://api-flet.onrender.com/cadastrar_produto/"
 
-            # Gera URL temporária para upload
-            username = "usuario_demo"
-            upload_url = page.get_upload_url(f"/{username}/uploads/{file.name}", 600)
+            with open(path, 'rb') as f:
+                files = {"arquivo": f}
+                response = requests.post(url=url, files=files)
 
-            upload_list.clear()
-            upload_list.append(
-                ft.FilePickerUploadFile(
-                    file.name,
-                    upload_url=upload_url
-                )
-            )
+            if response.status_code:
+                page.add(ft.Text(f"Codigo retornado: {response.json()}"))
 
-            uploaded_url = upload_url
-            page.update()
+
+
 
     def on_upload_clicked(e):
         if upload_list:
             upload_status_text.value = "Enviando arquivo..."
             page.update()
-            file_picker.upload(upload_list)
+
         else:
             file_name_text.value = "Por favor, selecione um arquivo antes de enviar."
             page.update()
@@ -70,12 +70,6 @@ def main(page: ft.Page):
         on_click=on_upload_clicked
     )
 
-    page.add(
-        pick_file_button,
-        file_name_text,
-        upload_button,
-        upload_status_text,
-        uploaded_image
-    )
+    page.add()
 
 ft.app(target=main, view=ft.WEB_BROWSER)
