@@ -12,64 +12,55 @@ def main(page: ft.Page):
     file_picker = ft.FilePicker()
     page.overlay.append(file_picker)
 
-    upload_list = []
-    uploaded_url = ""
-    
+    selected_file = None  # Armazena o arquivo selecionado
+
     def on_file_selected(e: ft.FilePickerResultEvent):
-        nonlocal uploaded_url
+        nonlocal selected_file
         if e.files:
             file = e.files[0]
             file_name_text.value = f"Arquivo selecionado: {file.name}"
             page.update()
-            url_image = page.get_upload_url(file.name, 600)
-            arquivo_url_image = {'arquivo': url_image}
-            url = "https://api-flet.onrender.com/cadastrar_produto/"
 
-            response = requests.post(url=url, files=arquivo_url_image)
-
-            try:
-                page.add(ft.Text(value=file.bytes, color=ft.Colors.RED))
-            except:
-                page.add(ft.Text(value='Não tem bytes não', color=ft.Colors.RED))
-            
-
-            if response.ok:
-                page.add(ft.Text(f"Código retornado: {response.json()}"))
+            if file.bytes:
+                selected_file = file  # Guarda o arquivo para envio posterior
             else:
-                page.add(ft.Text(f"Erro no upload: {response.status_code} - {response.text}"))
+                page.add(ft.Text("❌ O arquivo não tem bytes disponíveis. Verifique o picker!"))
         else:
-            page.add(ft.Text("Erro: arquivo sem bytes disponíveis para envio."))
-
-
+            file_name_text.value = "Nenhum arquivo selecionado"
+            page.update()
 
     def on_upload_clicked(e):
-        if upload_list:
+        if selected_file and selected_file.bytes:
             upload_status_text.value = "Enviando arquivo..."
             page.update()
 
+            # Monta o payload do arquivo
+            arquivo_payload = {
+                'arquivo': (selected_file.name, selected_file.bytes, 'application/octet-stream')
+            }
+            url = "https://api-flet.onrender.com/cadastrar_produto/"
+
+            response = requests.post(url, files=arquivo_payload)
+
+            if response.ok:
+                upload_status_text.value = "✅ Upload concluído com sucesso!"
+                result = response.json()
+                uploaded_image.src = result.get("url", "")
+                uploaded_image.visible = True
+            else:
+                upload_status_text.value = f"❌ Erro no upload: {response.status_code} - {response.text}"
+                uploaded_image.visible = False
+
+            page.update()
         else:
-            file_name_text.value = "Por favor, selecione um arquivo antes de enviar."
+            upload_status_text.value = "Por favor, selecione um arquivo antes de enviar."
             page.update()
 
-    def on_upload_complete(e):
-        upload_status_text.value = "✅ Upload concluído com sucesso!"
-
-        # Se for imagem, exibe na tela
-        file_name = upload_list[0].name.lower()
-        if file_name.endswith((".png", ".jpg", ".jpeg", ".gif")):
-            uploaded_image.src = upload_list[0].upload_url
-            uploaded_image.visible = True
-        else:
-            uploaded_image.visible = False
-
-        page.update()
-
     file_picker.on_result = on_file_selected
-    file_picker.on_upload_complete = on_upload_complete
 
     pick_file_button = ft.ElevatedButton(
         "Selecionar Arquivo",
-        on_click=lambda _: file_picker.pick_files()
+        on_click=lambda _: file_picker.pick_files(read_bytes=True)  # <- Aqui é fundamental!
     )
 
     upload_button = ft.ElevatedButton(
