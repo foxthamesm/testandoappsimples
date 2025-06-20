@@ -22,7 +22,7 @@ def main(page: ft.Page):
 
             # Faz upload do arquivo usando o próprio Flet
             file_picker.upload(
-                [ft.FilePickerUploadFile(file.name, upload_url)]
+                [ft.FilePickerUploadFile(file.name, upload_url, method="POST")]
             )
 
             
