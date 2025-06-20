@@ -22,10 +22,10 @@ def main(page: ft.Page):
             file_name_text.value = f"Arquivo selecionado: {file.name}"
             page.update()
             url_image = page.get_upload_url(file.name, 600)
-            print(url_image)
+            arquivo_url_image = {'arquivo': url_image}
             url = "https://api-flet.onrender.com/cadastrar_produto/"
 
-            response = requests.post(url=url, files=url_image)
+            response = requests.post(url=url, files=arquivo_url_image)
 
             try:
                 page.add(ft.Text(value=file.bytes, color=ft.Colors.RED))
