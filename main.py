@@ -14,7 +14,7 @@ def main(page: ft.Page):
     def on_file_selected(e: ft.FilePickerResultEvent):
         if e.files:
             file = e.files[0]
-            file_name_text.value = f"Arquivo selecionado: {file.name}"
+            file_name_text.value = f"Arquivo selecionado: {file.path}"
 
             a = page.get_upload_url(file, expires=600)
             page.update()
