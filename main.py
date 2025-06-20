@@ -14,23 +14,26 @@ def main(page: ft.Page):
 
     upload_list = []
     uploaded_url = ""
-
+    
     def on_file_selected(e: ft.FilePickerResultEvent):
         nonlocal uploaded_url
         if e.files:
             file = e.files[0]
             file_name_text.value = f"Arquivo selecionado: {file.name}"
-            path = file.path
-            #@app.post("/cadastrar_produto/")
+            page.update()
+
             url = "https://api-flet.onrender.com/cadastrar_produto/"
 
-            with open(path, 'rb') as f:
-                files = {"arquivo": f}
+            if file.bytes:
+                files = {"arquivo": (file.name, file.bytes)}
                 response = requests.post(url=url, files=files)
 
-            if response.status_code:
-                page.add(ft.Text(f"Codigo retornado: {response.json()}"))
-
+                if response.ok:
+                    page.add(ft.Text(f"Código retornado: {response.json()}"))
+                else:
+                    page.add(ft.Text(f"Erro no upload: {response.status_code} - {response.text}"))
+            else:
+                page.add(ft.Text("Erro: arquivo sem bytes disponíveis para envio."))
 
 
 
