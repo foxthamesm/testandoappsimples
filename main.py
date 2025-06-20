@@ -21,19 +21,24 @@ def main(page: ft.Page):
             file = e.files[0]
             file_name_text.value = f"Arquivo selecionado: {file.name}"
             page.update()
-
+            url_image = page.get_upload_url(file.name, 600)
+            print(url_image)
             url = "https://api-flet.onrender.com/cadastrar_produto/"
 
-            if file.bytes:
-                files = {"arquivo": (file.name, file.bytes)}
-                response = requests.post(url=url, files=files)
+            response = requests.post(url=url, files=url_image)
 
-                if response.ok:
-                    page.add(ft.Text(f"Código retornado: {response.json()}"))
-                else:
-                    page.add(ft.Text(f"Erro no upload: {response.status_code} - {response.text}"))
+            try:
+                page.add(ft.Text(value=file.bytes, color=ft.Colors.RED))
+            except:
+                page.add(ft.Text(value='Não tem bytes não', color=ft.Colors.RED))
+            
+
+            if response.ok:
+                page.add(ft.Text(f"Código retornado: {response.json()}"))
             else:
-                page.add(ft.Text("Erro: arquivo sem bytes disponíveis para envio."))
+                page.add(ft.Text(f"Erro no upload: {response.status_code} - {response.text}"))
+        else:
+            page.add(ft.Text("Erro: arquivo sem bytes disponíveis para envio."))
 
 
 
