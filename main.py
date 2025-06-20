@@ -21,9 +21,11 @@ def main(page: ft.Page):
             upload_url = "https://api-flet.onrender.com/cadastrar_produto/"
 
             # Faz upload do arquivo usando o próprio Flet
-            file_picker.upload_files(
+            file_picker.upload(
                 [ft.FilePickerUploadFile(file.name, upload_url)]
             )
+
+            
 
         else:
             file_name_text.value = "Nenhum arquivo selecionado"
